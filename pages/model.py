@@ -22,14 +22,14 @@ import joblib
 
 external_stylesheets = [
     "https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap",
-    "../assets/model_styles.css",
-    "../assets/styles.css"
+    "/assets/model_styles.css",
+    "/assets/styles.css"
 ]
 
 dash.register_page(__name__)
 
-model = tf.keras.models.load_model("../models/model_10.h5")
-pipe, enc = joblib.load("../models/pipe_10.joblib"), joblib.load("../models/enc_10.jobilb")
+model = tf.keras.models.load_model("models/model_10.h5")
+pipe, enc = joblib.load("models/pipe_10.joblib"), joblib.load("models/enc_10.jobilb")
 
 header = html.Div(
     id="app-header-model",
