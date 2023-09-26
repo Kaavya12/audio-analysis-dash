@@ -16,7 +16,7 @@ import plotly.graph_objects as go
 
 external_stylesheets = [
     "https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap",
-    "/assets/styles.css"
+    "../assets/styles.css"
 ]
 
 app = dash.Dash(__name__, use_pages=True, external_stylesheets=external_stylesheets)

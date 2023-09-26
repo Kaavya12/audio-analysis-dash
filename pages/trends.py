@@ -15,8 +15,8 @@ import plotly.graph_objects as go
 
 external_stylesheets = [
     "https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap",
-    "/assets/trends_styles.css",
-    "/assets/styles.css",
+    "../assets/trends_styles.css",
+    "../assets/styles.css",
     
 ]
 
@@ -53,7 +53,7 @@ landing = html.Div(id='landing', children=[header,
 )
 
 def createFigs():
-    top50_results = pd.read_csv("data/top_50_predicted_data_mod10_v2.csv")
+    top50_results = pd.read_csv("../data/top_50_predicted_data_mod10_v2.csv")
     top50_results['display_genre'] = np.where(top50_results['top_predicted_genre']=="Experimental", top50_results['second_predicted_genre'], top50_results['top_predicted_genre'])
     top50_results['display_genre'] = np.where(top50_results['display_genre']=="Electronic", top50_results['third_predicted_genre'], top50_results['display_genre'])
     top50_results = top50_results.sort_values(['year', 'display_genre'])
