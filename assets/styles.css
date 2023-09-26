@@ -1,0 +1,41 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
+
+html {
+    height: 100%
+}
+
+#nav {
+    font-family: "Poppins";
+    font-size: 2vmin;
+    justify-content: center;
+    height: 4vw;
+    color: aliceblue !important;
+    display: flex;
+    flex-direction: column;
+    background-color: black; 
+    /* rgb(15, 15, 69); */
+    margin-bottom: 0;
+    padding: 0;
+}
+
+#nav> div {
+    margin-left: 20px;
+    margin-bottom: 0;
+}
+
+#nav a {
+    margin-right: 20px;
+    margin-left: 20px;
+    color: aliceblue !important;
+    text-decoration: none;
+}
+
+a:hover {
+    color: beige;
+    text-decoration: underline !important;
+}

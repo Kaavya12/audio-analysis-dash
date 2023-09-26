@@ -1,0 +1,149 @@
+@media screen and (min-width: 900px) and (min-height: 600px){
+
+    #app-main {
+        /* background-image: radial-gradient(rgb(232, 210, 255), rgba(183,230,255)); */
+        background-image: linear-gradient(rgb(193, 136, 255), rgb(193, 136, 255), rgba(59, 199, 211));
+    }
+
+    #model-main{
+        padding: 0;
+        margin: 0;
+        height: 100vh; 
+        background: url('/assets/modelBg.svg') no-repeat center top;
+        background-size: 100% auto;
+    }
+
+    #app-header-model {
+        padding-top: 10vmin;
+        height: 10vh;
+        font-family: "Poppins";
+        text-align: center;
+        color: #3E2C3A;
+    }
+
+    #app-header-model > h1{
+        margin-top: 0;
+    }
+
+    #upload-data {
+        width: 60%;
+        height: 8vmin;
+        line-height: 60px;
+        border-width: 1px;
+        border-style: dashed;
+        border-radius: 5px;
+        text-align: center;
+        justify-content: top;
+        font-size: 1.25em;
+        margin: auto;
+        color: #3E2C3A;
+    }
+
+    #error-div {
+        color: #3E2C3A; 
+        text-align: center
+    }
+
+    #result-div {
+        padding-top: 12vmin; 
+        color: #3E2C3A; 
+        text-align: center;
+    }
+
+    div > a:hover {
+        color: darkred;
+        text-decoration: underline !important;
+    }
+
+    #results_div {
+        font-family: "Poppins";
+    }
+
+    #results_div > h2{
+        text-decoration: "underline" !important;
+        color: black;
+    }
+
+    p {
+        font-size: 1.1rem;
+        color: black;
+    }
+}
+
+@media screen and (min-width: 600px) and (max-width: 900px)  and (min-height: 600px){
+
+    #app-main {
+        /* background-image: radial-gradient(rgb(232, 210, 255), rgba(183,230,255)); */
+        background-image: linear-gradient(rgb(193, 136, 255), rgb(193, 136, 255), rgba(59, 199, 211));
+    }
+
+    #model-main{
+        padding: 0;
+        margin: 0;
+        height: 100vh; 
+        background: url('/assets/modelBg.svg') no-repeat center top;
+        background-size: 100% auto;
+    }
+
+    #app-header-model {
+        padding-top: 10vmin;
+        height: 10vh;
+        font-family: "Poppins";
+        text-align: center;
+        font-size: 0.8em;
+        color: #3E2C3A;
+    }
+
+    #app-header-model > h1{
+        margin-top: 0;
+    }
+
+    #upload-data {
+        width: 60%;
+        height: 6vh;
+        line-height: 50px;
+        border-width: 1px;
+        border-style: dashed;
+        border-radius: 5px;
+        text-align: center;
+        justify-content: top;
+        font-size: 1em;
+        margin: auto;
+        color: #3E2C3A;
+    }
+
+    #upload-data-div {
+        margin: 0;
+        padding: 0;
+    }
+
+    #error-div {
+        color: #3E2C3A; 
+        text-align: center
+    }
+
+    #result-div {
+        padding-top: 12vmin; 
+        color: #3E2C3A; 
+        text-align: center;
+    }
+
+    div > a:hover {
+        color: darkred;
+        text-decoration: underline !important;
+    }
+
+    #results_div {
+        font-family: "Poppins";
+    }
+
+    #results_div > h2{
+        text-decoration: "underline" !important;
+        color: black;
+    }
+
+    p {
+        font-size: 0.8rem;
+        color: black;
+    }
+}
