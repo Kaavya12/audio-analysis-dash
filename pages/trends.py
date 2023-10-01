@@ -1,17 +1,9 @@
 import numpy as np
-from keras.models import load_model
-from PIL import Image
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
-from dash.dependencies import Input, Output, State
-import pickle
 import plotly.express as px
-import dash_bootstrap_components as dbc
 import pandas as pd
-import plotly.graph_objects as go
-
-#figure = go.Figure(go.Scatter(name="Model", x=top50_results['year'], y=top50_results['rank']))
 
 external_stylesheets = [
     "https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap",
@@ -43,7 +35,7 @@ intro = html.Div(
     id="about",
     children=[
         html.H2("About this app"),
-        html.P(about_text)
+        html.P(about_text, id='about-text')
     ]
 )
 
@@ -62,30 +54,58 @@ def createFigs():
     yAxes = pd.Series(list(range(1,51))*50)
     
     rankPlot = px.scatter(top50_results, 
-                          x='year', y='rank', color='display_genre', 
+                          x='year', y='rank', color='display_genre',
                           hover_data=['year', 'rank', 'singer', 'song', 'top_predicted_genre', 'second_predicted_genre'])
+    
+    rankPlot.update_traces(marker={'size': 8})
     rankPlot.update_layout(
         xaxis=dict(
             title_text="Year"
         ),
         yaxis=dict(
             title_text="Rank"
-        )
+        ),
+        hoverlabel=dict(
+            bgcolor="white",
+            font_size=18,
+            font_family="Poppins"
+        ),
+        font=dict(
+            family="Poppins",
+            size=20,
+        ), legend_title="Genre"
     )
-    rankFig = dcc.Graph(id='rank-plot', figure=rankPlot)
+    rankPlot.layout.legend.itemsizing = 'constant'
+    
+    config = {'responsive': True}
+    rankPlot.layout._config= config
+    
+    rankFig = dcc.Graph(id='rank-plot', figure=rankPlot, style={'min-height': '600px', 'height': '50vh'})
 
     catPlot = px.scatter(top50_results, 
-                         x='year', y=yAxes, color='display_genre', 
+                         x='year', y=yAxes, color='display_genre',
                          hover_data=['year', 'rank', 'singer', 'song', 'top_predicted_genre', 'second_predicted_genre'])
+    catPlot.update_traces(marker={'size': 8})
     catPlot.update_layout(
         xaxis=dict(
             title_text="Year"
         ),
         yaxis=dict(
             title_text="Number"
-        )
+        ),
+        hoverlabel=dict(
+            bgcolor="white",
+            font_size=18,
+            font_family="Poppins"
+        ),
+        font=dict(
+            family="Poppins",
+            size=20,
+        ), legend_title="Genre"
     )
-    catFig = dcc.Graph(id='cat-plot', figure=catPlot)
+    catPlot.layout.legend.itemsizing = 'constant'
+    
+    catFig = dcc.Graph(id='cat-plot', figure=catPlot, style={'min-height': '600px', 'height': '50vh'})
     
     return rankFig, catFig
 

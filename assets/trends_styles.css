@@ -1,9 +1,52 @@
-@media screen and (min-width: 900px) and (min-height: 600px){
+@media screen and (min-width: 1600px){
     #app-header {
         margin-top: 0;
         text-align: center;
         padding-top: 2vh;
-        height: 30vh;
+        min-height: 30vh;
+        font-family: "Poppins";
+        text-align: center;
+        color: white;
+    }
+    
+    #header-title {
+        padding-top: 50px;
+        margin: 0;
+        font-size: 6em;
+    }
+    
+    #header-text {
+        font-size: 2em;
+        margin: 0.75vmin;
+    }
+    
+    #about {
+        min-height: 40vmin;
+        font-family: "Poppins";
+        font-size: 3ch;
+        text-align: center;
+        padding-left: 5vw;
+        padding-right: 5vw;
+        padding-bottom: 12vmin;
+        margin-top: 5vmax;
+    }
+
+    #about-text {
+        font-size: small;
+    }
+
+    #landing {
+        background: url('/assets/headerBg.svg');
+        background-size: cover;
+    }
+}
+
+@media screen and (min-width: 900px) and (min-height: 600px) and (max-width: 1600px){
+    #app-header {
+        margin-top: 0;
+        text-align: center;
+        padding-top: 2vh;
+        min-height: 30vh;
         font-family: "Poppins";
         text-align: center;
         color: white;
@@ -20,7 +63,7 @@
     }
     
     #about {
-        height: 40vmin;
+        min-height: 40vmin;
         font-family: "Poppins";
         font-size: 2ch;
         text-align: center;
@@ -45,7 +88,7 @@
     #app-header {
         margin-top: 0;
         text-align: center;
-        height: 25vmin;
+        min-height: 25vmin;
         font-family: "Poppins";
         text-align: center;
         color: white;
@@ -63,7 +106,7 @@
     }
     
     #about {
-        height: 40vmin;
+        min-height: 40vmin;
         font-family: "Poppins";
         font-size: 2.2vmin;
         text-align: center;

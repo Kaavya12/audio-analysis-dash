@@ -1,23 +1,17 @@
 import numpy as np
-from keras.models import load_model
-from PIL import Image
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
 from dash.dependencies import Input, Output, State
-import pickle
-import plotly.express as px
-import dash_bootstrap_components as dbc
 import pandas as pd
-import plotly.graph_objects as go
-import io, base64, datetime
+import io, base64
 import librosa
 from dash import callback
 import warnings
 from scipy import stats
 import tensorflow as tf
 import joblib
-
+  
 #figure = go.Figure(go.Scatter(name="Model", x=top50_results['year'], y=top50_results['rank']))
 
 external_stylesheets = [
@@ -51,10 +45,11 @@ upload = html.Div([
 ])
 
 def columns():
-    feature_sizes = dict(chroma_stft=12, chroma_cqt=12, chroma_cens=12,
-                         tonnetz=6, mfcc=20, rmse=1, zcr=1,
-                         spectral_centroid=1, spectral_bandwidth=1,
-                         spectral_contrast=7, spectral_rolloff=1)
+    feature_sizes = dict(chroma_cens=12,
+                            tonnetz=6, mfcc=20,
+                            zcr=1,
+                            spectral_centroid=1,
+                            spectral_contrast=7,)
     moments = ('mean', 'std', 'skew', 'kurtosis', 'median', 'min', 'max')
 
     columns = []
@@ -90,42 +85,34 @@ def compute_features(x, sr):
     assert cqt.shape[0] == 7 * 12
     assert np.ceil(len(x)/512) <= cqt.shape[1] <= np.ceil(len(x)/512)+1
 
-    f = librosa.feature.chroma_cqt(C=cqt, n_chroma=12, n_octaves=7)
-    feature_stats('chroma_cqt', f)
     f = librosa.feature.chroma_cens(C=cqt, n_chroma=12, n_octaves=7)
     feature_stats('chroma_cens', f)
     f = librosa.feature.tonnetz(chroma=f)
     feature_stats('tonnetz', f)
-
     del cqt
+    
     stft = np.abs(librosa.stft(x, n_fft=2048, hop_length=512))
     assert stft.shape[0] == 1 + 2048 // 2
     assert np.ceil(len(x)/512) <= stft.shape[1] <= np.ceil(len(x)/512)+1
     del x
 
-    f = librosa.feature.chroma_stft(S=stft**2, n_chroma=12)
-    feature_stats('chroma_stft', f)
-
-    f = librosa.feature.rms(S=stft)
-    feature_stats('rmse', f)
-
     f = librosa.feature.spectral_centroid(S=stft)
     feature_stats('spectral_centroid', f)
-    f = librosa.feature.spectral_bandwidth(S=stft)
-    feature_stats('spectral_bandwidth', f)
     f = librosa.feature.spectral_contrast(S=stft, n_bands=6)
     feature_stats('spectral_contrast', f)
-    f = librosa.feature.spectral_rolloff(S=stft)
-    feature_stats('spectral_rolloff', f)
 
     mel = librosa.feature.melspectrogram(sr=sr, S=stft**2)
     del stft
     f = librosa.feature.mfcc(S=librosa.power_to_db(mel), n_mfcc=20)
     feature_stats('mfcc', f)
+    del f
 
     return (features)
 
 def find_genre(y, sr):
+    global model
+    global pipe
+    global enc
     features = compute_features(y,sr)
     columns = ['mfcc', 'spectral_contrast', 'chroma_cens', 'spectral_centroid', 'zcr', 'tonnetz']
     features = features.loc[columns]
@@ -134,6 +121,7 @@ def find_genre(y, sr):
     features = pipe.transform(transposed_df)
     preds = model.predict(features)[0]
     preds = np.argsort(preds)
+    del features 
     return enc.inverse_transform(preds)[::-1]
 
 # genre_styles = {
@@ -202,12 +190,13 @@ def parse_contents(contents, filename, date):
             results = [
                 html.H2("Top 5 Predicted Genres")
             ]
-            for genre in find_genre(y,sr):
+            genres = find_genre(y,sr)
+            for genre in genres:
                 results.append(html.P(genre)),#, style=genre_styles[genre]))
             results = html.Div(children=results[:6], id='results_div')
-            output = html.Div(["File accepted!", html.Br()])
+            output = html.Div(["File accepted!", html.Br()], id="output-div")
         else:
-            output = html.Div(["Please upload an MP3 or WAV File"])
+            output = html.Div(["Please upload an MP3 or WAV File"], id="output-div")
             results = html.Br()
             
     except Exception as e:
@@ -217,7 +206,8 @@ def parse_contents(contents, filename, date):
         ])
 
     return html.Div(id="result-div", children=[
-        html.H3(f"File Received: {filename}"),
+        html.H3(f"File Received:"),
+        html.H3(f"{filename}"),
         output,
         html.Br(),  # horizontal line
         results

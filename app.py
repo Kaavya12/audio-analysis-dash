@@ -28,7 +28,7 @@ app.config.suppress_callback_exceptions = True
 
 nav = html.Nav(id='nav', children=[
     html.Div([
-        dcc.Link(page["name"], href=page['path'])    
+        dcc.Link(page["name"], href=page['path'])
         for page in dash.page_registry.values()
     ])
 ])
