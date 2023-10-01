@@ -1,16 +1,6 @@
-
-import numpy as np
-from keras.models import load_model
-from PIL import Image
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
-from dash.dependencies import Input, Output, State
-import pickle
-import plotly.express as px
-import dash_bootstrap_components as dbc
-import pandas as pd
-import plotly.graph_objects as go
 
 #figure = go.Figure(go.Scatter(name="Model", x=top50_results['year'], y=top50_results['rank']))
 
