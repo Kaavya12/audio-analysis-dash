@@ -9,10 +9,10 @@ external_stylesheets = [
     "../assets/styles.css"
 ]
 
-app = dash.Dash(__name__, use_pages=True, external_stylesheets=external_stylesheets)
+application = dash.Dash(__name__, use_pages=True, external_stylesheets=external_stylesheets)
 
-app.css.config.serve_locally = False
-app.config.suppress_callback_exceptions = True
+application.css.config.serve_locally = False
+application.config.suppress_callback_exceptions = True
 
 nav = html.Nav(id='nav', children=[
     html.Div([
@@ -21,10 +21,13 @@ nav = html.Nav(id='nav', children=[
     ])
 ])
 
-app.layout = html.Div(id='app-main', children=[
+application.layout = html.Div(id='app-main', children=[
     nav,
     dash.page_container
 ]
 )
 
-server = app.server
+server = application.server
+
+if __name__ == '__main__':
+    application.run(debug=True, port=8000)
