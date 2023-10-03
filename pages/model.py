@@ -1,7 +1,7 @@
 import numpy as np
 import dash
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import html
+from dash import dcc
 from dash.dependencies import Input, Output, State
 import pandas as pd
 import io, base64
@@ -22,7 +22,7 @@ external_stylesheets = [
 
 dash.register_page(__name__)
 
-model = tf.keras.models.load_model("models/model_10.h5")
+model = tf.keras.models.load_model("models/model_10.h5", compile=False)
 pipe, enc = joblib.load("models/pipe_10.joblib"), joblib.load("models/enc_10.jobilb")
 
 header = html.Div(

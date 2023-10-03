@@ -1,6 +1,6 @@
 import dash
-import dash_html_components as html
-import dash_core_components as dcc
+from dash import html
+from dash import dcc
 
 #figure = go.Figure(go.Scatter(name="Model", x=top50_results['year'], y=top50_results['rank']))
 
@@ -10,8 +10,6 @@ external_stylesheets = [
 ]
 
 app = dash.Dash(__name__, use_pages=True, external_stylesheets=external_stylesheets)
-
-server = app.server
 
 app.css.config.serve_locally = False
 app.config.suppress_callback_exceptions = True
@@ -29,5 +27,4 @@ app.layout = html.Div(id='app-main', children=[
 ]
 )
 
-if __name__ == "__main__":
-    app.run_server()
+server = app.server
