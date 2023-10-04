@@ -1,11 +1,11 @@
 dash==2.9.2
 dash_core_components==2.0.0
 dash_html_components==2.0.0
+tensorflow==2.13.0
 joblib==1.2.0
 librosa==0.10.1
-numpy
-pandas==2.0.0
 plotly==5.14.0
 scipy==1.11.3
-tensorflow==2.13.0
+numpy
+pandas==2.0.0
 gunicorn
