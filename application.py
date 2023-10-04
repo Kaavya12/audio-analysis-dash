@@ -27,7 +27,7 @@ app.layout = html.Div(id='app-main', children=[
 ]
 )
 
-server = app.server
+application = app.server
 
 if __name__ == '__main__':
-    server.run(debug=True, port="8000")
+    application.run(host='0.0.0.0', port="8080")
