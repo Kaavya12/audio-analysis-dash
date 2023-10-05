@@ -11,6 +11,7 @@ import warnings
 from scipy import stats
 import tensorflow as tf
 import joblib
+from memory_profiler import profile
   
 #figure = go.Figure(go.Scatter(name="Model", x=top50_results['year'], y=top50_results['rank']))
 
@@ -22,7 +23,9 @@ external_stylesheets = [
 
 dash.register_page(__name__)
 
-model = tf.keras.models.load_model("models/model_10.h5", compile=False)
+interpreter = tf.lite.Interpreter(model_path="models/model.tflite")
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
 pipe, enc = joblib.load("models/pipe_10.joblib"), joblib.load("models/enc_10.jobilb")
 
 header = html.Div(
@@ -44,6 +47,7 @@ upload = html.Div([
     ),
 ])
 
+@profile
 def columns():
     feature_sizes = dict(chroma_cens=12,
                             tonnetz=6, mfcc=20,
@@ -63,6 +67,7 @@ def columns():
 
     return columns.sort_values()
 
+@profile
 def compute_features(x, sr):
     features = pd.Series(index=columns(), dtype=np.float32)
     warnings.filterwarnings('error', module='librosa')
@@ -109,18 +114,26 @@ def compute_features(x, sr):
 
     return (features)
 
+@profile
 def find_genre(y, sr):
-    global model
+    global interpreter
     global pipe
     global enc
+    interpreter.allocate_tensors()
     features = compute_features(y,sr)
     columns = ['mfcc', 'spectral_contrast', 'chroma_cens', 'spectral_centroid', 'zcr', 'tonnetz']
     features = features.loc[columns]
     transposed_df = pd.DataFrame(features.values.reshape(1, -1),
                               columns=features.index)
     features = pipe.transform(transposed_df)
-    preds = model.predict(features)[0]
-    preds = np.argsort(preds)
+    features = np.array(features, dtype=np.float32)
+
+    input_shape = input_details[0]['index']
+    interpreter.set_tensor(input_shape, features)
+
+    interpreter.invoke()
+    output_data = interpreter.get_tensor(output_details[0]['index'])
+    preds = np.argsort(output_data.reshape(-1))
     del features 
     return enc.inverse_transform(preds)[::-1]
 
@@ -179,6 +192,7 @@ def find_genre(y, sr):
 #     },
 # }
 
+@profile
 def parse_contents(contents, filename, date):
     content_type, content_string = contents.split(',')
 
