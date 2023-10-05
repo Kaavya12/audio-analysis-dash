@@ -12,6 +12,9 @@ from scipy import stats
 import tensorflow as tf
 import joblib
 
+import os
+os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+
 #figure = go.Figure(go.Scatter(name="Model", x=top50_results['year'], y=top50_results['rank']))
 
 interpreter = tf.lite.Interpreter(model_path="models/model.tflite")
