@@ -11,7 +11,8 @@ import warnings
 from scipy import stats
 import tensorflow as tf
 import joblib
-
+from memory_profiler import profile
+import gc
 import os
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
@@ -50,6 +51,7 @@ upload = html.Div([
     ),
 ])
 
+@profile
 def columns():
     feature_sizes = dict(chroma_cens=12,
                             tonnetz=6, mfcc=20,
@@ -69,6 +71,7 @@ def columns():
 
     return columns.sort_values()
 
+@profile
 def compute_features(x, sr):
     features = pd.Series(index=columns(), dtype=np.float32)
     warnings.filterwarnings('error', module='librosa')
@@ -95,12 +98,12 @@ def compute_features(x, sr):
     feature_stats('chroma_cens', f)
     f = librosa.feature.tonnetz(chroma=f)
     feature_stats('tonnetz', f)
-    del cqt
+    cqt = None
     
     stft = np.abs(librosa.stft(x, n_fft=2048, hop_length=512))
     assert stft.shape[0] == 1 + 2048 // 2
     assert np.ceil(len(x)/512) <= stft.shape[1] <= np.ceil(len(x)/512)+1
-    del x
+    x = None
 
     f = librosa.feature.spectral_centroid(S=stft)
     feature_stats('spectral_centroid', f)
@@ -108,13 +111,17 @@ def compute_features(x, sr):
     feature_stats('spectral_contrast', f)
 
     mel = librosa.feature.melspectrogram(sr=sr, S=stft**2)
-    del stft
+    stft = None
+
     f = librosa.feature.mfcc(S=librosa.power_to_db(mel), n_mfcc=20)
     feature_stats('mfcc', f)
-    del f
+    
+    f = None
+    gc.collect()
 
     return (features)
 
+@profile
 def find_genre(y, sr):
     features = compute_features(y,sr)
     columns = ['mfcc', 'spectral_contrast', 'chroma_cens', 'spectral_centroid', 'zcr', 'tonnetz']
@@ -132,8 +139,11 @@ def find_genre(y, sr):
     preds = np.argsort(output_data.reshape(-1))
     features = None
     transposed_df = None
+    gc.collect()
+
     return enc.inverse_transform(preds)[::-1]
 
+@profile
 def parse_contents(contents, filename, date):
     content_type, content_string = contents.split(',')
 
@@ -147,6 +157,8 @@ def parse_contents(contents, filename, date):
             ]
             genres = find_genre(y,sr)
             y = None
+            gc.collect()
+
             for genre in genres:
                 results.append(html.P(genre)),#, style=genre_styles[genre]))
             results = html.Div(children=results[:6], id='results_div')
