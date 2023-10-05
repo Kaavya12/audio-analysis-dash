@@ -17,7 +17,7 @@ os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 
 #figure = go.Figure(go.Scatter(name="Model", x=top50_results['year'], y=top50_results['rank']))
 
-interpreter = tf.lite.Interpreter(model_path="models/model.tflite")
+interpreter = tf.lite.Interpreter(model_path="models/model_v2.tflite")
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
 interpreter.allocate_tensors()
@@ -131,6 +131,7 @@ def find_genre(y, sr):
     output_data = interpreter.get_tensor(output_details[0]['index'])
     preds = np.argsort(output_data.reshape(-1))
     features = None
+    transposed_df = None
     return enc.inverse_transform(preds)[::-1]
 
 def parse_contents(contents, filename, date):
