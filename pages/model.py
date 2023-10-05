@@ -11,8 +11,6 @@ import warnings
 from scipy import stats
 import tensorflow as tf
 import joblib
-from memory_profiler import profile
-  
 #figure = go.Figure(go.Scatter(name="Model", x=top50_results['year'], y=top50_results['rank']))
 
 external_stylesheets = [
@@ -47,7 +45,6 @@ upload = html.Div([
     ),
 ])
 
-@profile
 def columns():
     feature_sizes = dict(chroma_cens=12,
                             tonnetz=6, mfcc=20,
@@ -67,7 +64,6 @@ def columns():
 
     return columns.sort_values()
 
-@profile
 def compute_features(x, sr):
     features = pd.Series(index=columns(), dtype=np.float32)
     warnings.filterwarnings('error', module='librosa')
@@ -114,7 +110,6 @@ def compute_features(x, sr):
 
     return (features)
 
-@profile
 def find_genre(y, sr):
     global interpreter
     global pipe
@@ -192,7 +187,6 @@ def find_genre(y, sr):
 #     },
 # }
 
-@profile
 def parse_contents(contents, filename, date):
     content_type, content_string = contents.split(',')
 
