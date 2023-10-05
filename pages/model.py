@@ -11,11 +11,13 @@ import warnings
 from scipy import stats
 import tensorflow as tf
 import joblib
+
 #figure = go.Figure(go.Scatter(name="Model", x=top50_results['year'], y=top50_results['rank']))
 
 interpreter = tf.lite.Interpreter(model_path="models/model.tflite")
 input_details = interpreter.get_input_details()
 output_details = interpreter.get_output_details()
+interpreter.allocate_tensors()
 pipe, enc = joblib.load("models/pipe_10.joblib"), joblib.load("models/enc_10.jobilb")
 
 external_stylesheets = [
@@ -111,7 +113,6 @@ def compute_features(x, sr):
     return (features)
 
 def find_genre(y, sr):
-    interpreter.allocate_tensors()
     features = compute_features(y,sr)
     columns = ['mfcc', 'spectral_contrast', 'chroma_cens', 'spectral_centroid', 'zcr', 'tonnetz']
     features = features.loc[columns]
@@ -126,7 +127,7 @@ def find_genre(y, sr):
     interpreter.invoke()
     output_data = interpreter.get_tensor(output_details[0]['index'])
     preds = np.argsort(output_data.reshape(-1))
-    del features 
+    features = None
     return enc.inverse_transform(preds)[::-1]
 
 def parse_contents(contents, filename, date):
@@ -141,6 +142,7 @@ def parse_contents(contents, filename, date):
                 html.H2("Top 5 Predicted Genres")
             ]
             genres = find_genre(y,sr)
+            y = None
             for genre in genres:
                 results.append(html.P(genre)),#, style=genre_styles[genre]))
             results = html.Div(children=results[:6], id='results_div')
