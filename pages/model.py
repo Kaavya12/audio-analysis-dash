@@ -13,6 +13,11 @@ import tensorflow as tf
 import joblib
 #figure = go.Figure(go.Scatter(name="Model", x=top50_results['year'], y=top50_results['rank']))
 
+interpreter = tf.lite.Interpreter(model_path="models/model.tflite")
+input_details = interpreter.get_input_details()
+output_details = interpreter.get_output_details()
+pipe, enc = joblib.load("models/pipe_10.joblib"), joblib.load("models/enc_10.jobilb")
+
 external_stylesheets = [
     "https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap",
     "/assets/model_styles.css",
@@ -20,11 +25,6 @@ external_stylesheets = [
 ]
 
 dash.register_page(__name__)
-
-interpreter = tf.lite.Interpreter(model_path="models/model.tflite")
-input_details = interpreter.get_input_details()
-output_details = interpreter.get_output_details()
-pipe, enc = joblib.load("models/pipe_10.joblib"), joblib.load("models/enc_10.jobilb")
 
 header = html.Div(
     id="app-header-model",
@@ -111,9 +111,6 @@ def compute_features(x, sr):
     return (features)
 
 def find_genre(y, sr):
-    global interpreter
-    global pipe
-    global enc
     interpreter.allocate_tensors()
     features = compute_features(y,sr)
     columns = ['mfcc', 'spectral_contrast', 'chroma_cens', 'spectral_centroid', 'zcr', 'tonnetz']
@@ -131,61 +128,6 @@ def find_genre(y, sr):
     preds = np.argsort(output_data.reshape(-1))
     del features 
     return enc.inverse_transform(preds)[::-1]
-
-# genre_styles = {
-#     'Pop' : {
-#         "color": "#f83",
-#         "text-decoration": "none"
-#     },
-#     'Spoken' : {
-#         "color": "lightblue",
-#         "text-decoration": "none" 
-#     },
-#     'Rock' : {
-#         "color": "lightgreen",
-#         "text-decoration": "none" 
-#     },
-#     'Folk' : {
-#         "color": "#f83",
-#         "text-decoration": "none" 
-#     },
-#     'Electronic' : {
-#         "color": "lightblue",
-#         "text-decoration": "none" 
-#     },
-#     'Instrumental' : {
-#         "color": "lightgreen",
-#         "text-decoration": "none" 
-#     },
-#     'Country' : {
-#         "color": "#f83",
-#         "text-decoration": "none" 
-#     },
-#     'Jazz' : {
-#         "color": "lightblue",
-#         "text-decoration": "none" 
-#     },
-#     'Classical' : {
-#         "color": "lightgreen",
-#         "text-decoration": "none" 
-#     },
-#     'Blues' : {
-#         "color": "#f83",
-#         "text-decoration": "none" 
-#     },
-#     'Hip-Hop' : {
-#         "color": "lightblue",
-#         "text-decoration": "none" 
-#     },
-#     'International' : {
-#         "color": "lightgreen",
-#         "text-decoration": "none" 
-#     },
-#     'Old-Time / Historic': {
-#         "color": "#f83",
-#         "text-decoration": "none" 
-#     },
-# }
 
 def parse_contents(contents, filename, date):
     content_type, content_string = contents.split(',')
